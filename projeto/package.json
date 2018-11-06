@@ -17,6 +17,7 @@
   "author": "y",
   "license": "ISC",
   "devDependencies": {
+    "gulp-clean": "^0.3.1",
     "gulp-imagemin": "^2.3.0"
   },
   "dependencies": {
