@@ -1,13 +1,16 @@
 // gulpfile.js
-var gulp = require('gulp')
-  ,imagemin = require('gulp-imagemin'),
+var gulp = require('gulp'),
+  imagemin = require('gulp-imagemin'),
   clean = require('gulp-clean'),
   concat = require('gulp-concat'),
-  htmlReplace = require('gulp-html-replace');
+  htmlReplace = require('gulp-html-replace'),
+  uglify = require('gulp-uglify'),
+  usemin = require('gulp-usemin'),
+  cssmin = require('gulp-cssmin')
 
 //task de nome padrao, chama todas as outras tasks
 gulp.task('default', ['copy'], function() {
-  gulp.start('build-img', 'build-js', 'build-html');
+  gulp.start('build-img', 'usemin');
 });
 
 //copia os arquivos da pasta 'src'para 'dist'
@@ -29,19 +32,11 @@ gulp.task('build-img', function() {
     .pipe(gulp.dest('src/img'));
 });
 
-/*junta todos os arquivos .js e concatena salvando na pasta dist. 
-Um unico arquivo para ser carregado no navegador do usuario o que melhora o desempenho*/
-gulp.task('build-js', function() {
-    gulp.src(['dist/js/jquery.js', 'dist/js/home.js', 'dist/js/produto.js'])
-    .pipe(concat('all.js'))
-    .pipe(gulp.dest('dist/js'));
-});
-
-//substitui os scripts de chamada dos arquivos .js por all.js
-gulp.task('build-html', function() {
+gulp.task('usemin', function() {
   gulp.src('dist/**/*.html')
-    .pipe(htmlReplace({
-      js: 'js/all.js'
-  }))
+    .pipe(usemin({
+      'js' : [uglify],
+      'css' : [cssmin]
+    }))
     .pipe(gulp.dest('dist'));
-})
+});
