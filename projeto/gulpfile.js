@@ -11,7 +11,8 @@ var gulp = require('gulp'),
   jshint = require('gulp-jshint'),
   jshintStylish = require('jshint-stylish'),
   csslint = require('gulp-csslint'),
-  autoprefixer = require('gulp-autoprefixer')
+  autoprefixer = require('gulp-autoprefixer'),
+  less = require('gulp-less');
 
 //task de nome padrao, chama todas as outras tasks
 gulp.task('default', ['copy'], function() {
@@ -53,7 +54,7 @@ gulp.task('server', function() {
           baseDir: 'src'
         }
     });
-    gulp.watch('src/**/*').on('change', browserSync.reload);
+    
 
     gulp.watch('src/js/**/*.js').on('change', function(event){
       console.log("Linting " + event.path);
@@ -68,5 +69,16 @@ gulp.task('server', function() {
           .pipe(csslint())
           .pipe(csslint.reporter());
     }); 
+
+    gulp.watch('src/less/**/*.less').on('change', function(event){
+        var stream = gulp.src(event.path)        
+        .pipe(less().on('error', function(erro){
+          console.log('LESS, erro compilação: '+ erro.filename);
+          console.log(erro.message);
+        }))
+        .pipe(gulp.dest('src/css'));
+    });
+
+    gulp.watch('src/**/*').on('change', browserSync.reload);
 });
 
